@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
-  gem.version       = '0.0.2'
+  gem.version       = '0.0.3'
 
 	gem.add_dependency('crack')
 #  gem.add_development_dependency(%q<rspec>, [">= 2.7.0"])

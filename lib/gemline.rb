@@ -5,8 +5,9 @@ class Gemline
 
   def self.query(gem)
     gem = gem.to_s.gsub(/[^\w\-]+/,'')
-    if (gem.empty?)
+    if (gem.empty? || ['-h','--help','help'].include?(gem))
       puts "Usage: gemline [GEM NAME]"
+      puts "  Prints a Gemfile require line for a Ruby gem on Rubygems.org"
       exit
     end
   
