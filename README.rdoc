@@ -11,3 +11,7 @@ If possible, we'll also copy that Gemfile line into the clipboard using pbcopy.
 == Usage
 
   # gemline [GEM NAME]
+
+  # $ gemline rails
+  # gem "rails", "~> 3.1.1"
+  #   Gem line copied to your clipboard.  Ready to paste into your Gemfile
