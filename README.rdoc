@@ -4,6 +4,12 @@ Create a tilde-arrow Gemfile line for a gem on rubygems.org using the latest ver
 
 If possible, we'll also copy that Gemfile line into the clipboard using pbcopy.
 
+== Example
+
+  # gemline rails
+  gem "rails", "~> 3.1.1"
+    Gem line copied to your clipboard.  Ready to paste into your Gemfile
+
 == Install
 
   # gem install gemline
@@ -11,9 +17,3 @@ If possible, we'll also copy that Gemfile line into the clipboard using pbcopy.
 == Usage
 
   # gemline [GEM NAME]
-
-== Example
-
-  # gemline rails
-  gem "rails", "~> 3.1.1"
-    Gem line copied to your clipboard.  Ready to paste into your Gemfile
