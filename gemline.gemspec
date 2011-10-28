@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/gemline', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["Joseph Alba"]
@@ -8,12 +7,12 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{}
   gem.homepage      = "http://github.com/joealba/gemline"
 
-  gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  gem.executables   << 'gemline'
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
-  gem.version       = Gemline::VERSION
+  gem.version       = '0.0.2'
 
 	gem.add_dependency('crack')
 #  gem.add_development_dependency(%q<rspec>, [">= 2.7.0"])

@@ -2,10 +2,9 @@ require 'crack/json'
 require 'net/http'
 
 class Gemline
-  VERSION = "0.0.1"
 
-  def self.start
-    gem = ARGV[0].to_s.gsub(/[^\w\-]+/,'')
+  def self.query(gem)
+    gem = gem.to_s.gsub(/[^\w\-]+/,'')
     if (gem.empty?)
       puts "Usage: gemline [GEM NAME]"
       exit
