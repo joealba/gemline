@@ -1,19 +1,12 @@
-require 'gemline/version'
-require 'thor'
-require 'crack'
+#require 'gemline/version'
+require 'crack/json'
 require 'net/http'
 
-class Gemline < Thor
-  default_task :query
+class Gemline
+  VERSION = "0.0.1"
 
-  def query
-    gem = ARGV[0].to_s.gsub(/[^\w\-]+/,'')
-    url = "https://rubygems.org/api/v1/gems/#{gem}.json"
-    doc = Net::HTTP.get(URI.parse(url))
-    response = Crack.parse(doc)
-    puts %Q{gem #{gem}, "~> #{response[:version]}"}
-  end
-  
-  
-#  Gemline.start
+  gem = ARGV[0].to_s.gsub(/[^\w\-]+/,'')
+  doc = Net::HTTP.get(URI.parse("http://rubygems.org/api/v1/gems/#{gem}.json"))
+  response = Crack::JSON.parse(doc)
+  puts %Q{gem "#{gem}", "~> #{response['version']}"}  
 end
