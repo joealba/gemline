@@ -1,0 +1,13 @@
+= gemline
+
+Create a tilde-arrow Gemfile line for a gem on rubygems.org using the latest version number available according to the rubygems api.
+
+If possible, we'll also copy that Gemfile line into the clipboard using pbcopy.
+
+== Install
+
+  # gem install gemline
+
+== Usage
+
+  # gemline [GEM NAME]
