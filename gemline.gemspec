@@ -7,13 +7,14 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{}
   gem.homepage      = "http://github.com/joealba/gemline"
 
-  gem.executables   << 'gemline'
+  gem.executables   = ['gemline']
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
-  gem.version       = '0.0.3'
+
+  gem.version       = '0.0.4'
 
 	gem.add_dependency('crack')
-#  gem.add_development_dependency(%q<rspec>, [">= 2.7.0"])
+  gem.add_development_dependency(%q<rspec>, [">= 2.7.0"])
 end
