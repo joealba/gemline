@@ -17,3 +17,10 @@ If possible, we'll also copy that Gemfile line into the clipboard using pbcopy.
 == Usage
 
   # gemline [GEM NAME]
+
+== Upcoming features
+
+* A --pre option to grab the latest prerelease version
+* An --open option to open the gem's rubygems.org page in the default browser
+* Switching to a real command line parser instead of the lazy code in place now to allow the addition of the above options
+
