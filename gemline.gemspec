@@ -13,9 +13,9 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.0.4'
+  gem.version       = '0.1.0'
 
 	gem.add_dependency('crack')
-	gem.add_dependency('rake') # For Travis CI
+	gem.add_development_dependency('rake') # For Travis CI
   gem.add_development_dependency(%q<rspec>, [">= 2.7.0"])
 end
