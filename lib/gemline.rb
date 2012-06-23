@@ -1,10 +1,8 @@
-Encoding.default_external = Encoding::UTF_8
-
 require 'crack/json'
 require 'net/http'
 
 require 'yaml'
-YAML::ENGINE.yamler = 'syck'
+YAML::ENGINE.yamler = 'syck' if RUBY_VERSION[0,3] == "1.9"
 
 
 class Gemline
