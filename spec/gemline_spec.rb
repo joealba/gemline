@@ -32,6 +32,12 @@ describe Gemline do
       g = Gemline.new('nokogiri')
       g.gemline.should == %Q{gem "nokogiri", "~> 1.5.5"}
     end
+
+    it "should be able to generate a gemspec-style gemline" do
+      g = Gemline.new('rails', :gemspec => true)
+      g.gemline.should == %Q!gem.add_dependency(%q<rails>, ["~> 3.1.1"])!
+    end
+
   end
 
 end

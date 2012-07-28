@@ -24,12 +24,12 @@ class Gemline
   end
 
 
-  def initialize(gem_name)
+  def initialize(gem_name, options = {})
     @gem = gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = Crack::JSON.parse(@json)
-      @gemline = Gemline.create_gemline(@gem, response['version'])
+      @gemline = Gemline.create_gemline(@gem, response['version'], options)
     end
   end
 
@@ -44,9 +44,22 @@ class Gemline
     Net::HTTP.get(URI.parse("http://rubygems.org/api/v1/gems/#{gem_name}.json"))
   end  
 
-  def self.create_gemline(gem_name, version)
+  def self.create_gemline(gem_name, version, options = {})
+    if options[:gemspec]
+      return gemspec_gemline(gem_name, version)
+    else
+      return gemfile_gemline(gem_name, version)
+    end
+  end
+
+  def self.gemfile_gemline(gem_name, version)
     %Q{gem "#{gem_name}", "~> #{version}"}  
   end
+
+  def self.gemspec_gemline(gem_name, version)
+    %Q{gem.add_dependency(%q<#{gem_name}>, ["~> #{version}"])}  
+  end
+
 
   def self.check_input(gem_name)
     if (gem_name.empty? || ['-h','--help','help'].include?(gem_name))
