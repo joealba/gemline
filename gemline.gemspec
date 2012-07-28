@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.1.2'
+  gem.version       = '0.1.3'
 
 	gem.add_dependency('crack')
 	gem.add_development_dependency('rake') # For Travis CI

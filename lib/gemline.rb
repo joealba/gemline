@@ -15,8 +15,8 @@ class Gemline
     g = Gemline.new(gem_name)
     
     if g.gem_not_found?
-      puts "Ruby gem #{gem_name} was not found on rubygems.org"
-      exit
+      $stderr.puts "Ruby gem #{gem_name} was not found on rubygems.org"
+      Kernel.exit 1
     else
       puts g.gemline
       copy_to_clipboard(g.gemline)
@@ -63,9 +63,9 @@ class Gemline
 
   def self.check_input(gem_name)
     if (gem_name.empty? || ['-h','--help','help'].include?(gem_name))
-      puts "Usage: gemline [GEM NAME]"
-      puts "  Prints a Gemfile require line for a Ruby gem on Rubygems.org"
-      exit
+      $stderr.puts "Usage: gemline [GEM NAME]"
+      $stderr.puts "  Prints a Gemfile require line for a Ruby gem on Rubygems.org"
+      Kernel.exit 1
     end
     
     # if (['-v','--version'].include?(gem_name))
@@ -78,7 +78,7 @@ class Gemline
     begin
       if clipboard = IO.popen('pbcopy', 'r+')
         clipboard.puts gemline
-        puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
+        $stderr.puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
       end
     rescue
       ## Yeah, I hate this too.  But it does what I want -- silently fail if pbcopy isn't available.
