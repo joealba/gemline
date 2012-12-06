@@ -9,13 +9,13 @@ describe "gemline output" do
 
   it "should output one line to STDOUT so the output can be appended to a Gemfile" do
     grab_io { Gemline.query('rails') }
-    @stdout.readlines.count.should eq(1)
+    expect(@stdout.readlines.count).to eq(1)
   end
 
   it "should output nothing to STDOUT on error" do
     Kernel.stub(:exit)
     grab_io { Gemline.query('doesnotexist') }
-    @stdout.readlines.count.should eq(0)
+    expect(@stdout.readlines.count).to eq(0)
   end
 
 end

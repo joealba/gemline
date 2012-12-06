@@ -1,4 +1,13 @@
 #!/usr/bin/env ruby
 
 require "gemline"
-Gemline.query(ARGV[0])
+
+## TODO: Real command line parsing to support some switches
+##   for things like:
+##   --pre : Get latest pre-release version
+##   --gemspec or -g : Get the gemspec version of the gemline
+##   --major N : Get latest version of gem within the given major release number
+##   --web or -w : Get rubygems.org link
+gem = STDIN.tty? ? ARGV[0] : STDIN.read
+
+Gemline.query(gem)

@@ -9,7 +9,7 @@ class Gemline
   attr_accessor :gem, :gemline, :json, :response
 
   def self.query(gem_name)
-    gem_name = gem_name.to_s.gsub(/[^\w\-]+/,'')
+    gem_name = sanitize_gem_name(gem_name)
     check_input(gem_name)
 
     g = Gemline.new(gem_name)
@@ -21,6 +21,10 @@ class Gemline
       puts g.gemline
       copy_to_clipboard(g.gemline)
     end
+  end
+
+  def self.sanitize_gem_name(gem_name)
+    gem_name.to_s.gsub(/[^\w\-]+/,'')
   end
 
 
