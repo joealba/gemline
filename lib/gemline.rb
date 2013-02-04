@@ -1,8 +1,5 @@
-require 'crack/json'
-require 'net/http'
-
-require 'yaml'
-YAML::ENGINE.yamler = 'syck' if RUBY_VERSION[0,3] == "1.9"
+require 'json/pure'
+require 'net/https'
 
 
 class Gemline
@@ -13,7 +10,7 @@ class Gemline
     check_input(gem_name)
 
     g = Gemline.new(gem_name)
-    
+
     if g.gem_not_found?
       $stderr.puts "Ruby gem #{gem_name} was not found on rubygems.org"
       Kernel.exit 1
@@ -32,7 +29,7 @@ class Gemline
     @gem = gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
-      @response = Crack::JSON.parse(@json)
+      @response = JSON.parse(@json)
       @gemline = Gemline.create_gemline(@gem, response['version'], options)
     end
   end
@@ -45,8 +42,14 @@ class Gemline
   private
   
   def self.get_rubygem_json(gem_name)
-    Net::HTTP.get(URI.parse("http://rubygems.org/api/v1/gems/#{gem_name}.json"))
-  end  
+    uri = URI.parse("https://rubygems.org/api/v1/gems/#{gem_name}.json")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    request = Net::HTTP::Get.new(uri.request_uri)
+    response = http.request(request)
+    response.body
+  end
 
   def self.create_gemline(gem_name, version, options = {})
     if options[:gemspec]
