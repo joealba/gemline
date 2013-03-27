@@ -13,9 +13,11 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.2.0'
+  gem.version       = '0.3.0'
 
-  gem.add_dependency('json_pure', ["~> 1.7.6"])
-	gem.add_development_dependency('rake') # For Travis CI
-  gem.add_development_dependency(%q<rspec>, [">= 2.11.0"])
+  gem.add_dependency "json_pure", ">= 1.7.6"
+  gem.add_dependency "clipboard", ">= 1.0.1"
+
+	gem.add_development_dependency "rake" # For Travis CI
+  gem.add_development_dependency "rspec", ">= 2.11.0"
 end

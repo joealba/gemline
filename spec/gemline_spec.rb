@@ -32,7 +32,7 @@ describe Gemline do
 
     it "should be able to generate a gemspec-style gemline" do
       g = Gemline.new('rails', :gemspec => true)
-      expect(g.gemline).to eq(%Q!gem.add_dependency(%q<rails>, ["~> 3.1.1"])!)
+      expect(g.gemline).to eq(%Q!gem.add_dependency "rails", ">= 3.1.1"!)
     end
 
   end

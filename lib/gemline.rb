@@ -1,6 +1,6 @@
 require 'json/pure'
 require 'net/https'
-
+require 'clipboard'
 
 class Gemline
   attr_accessor :gem, :gemline, :json, :response
@@ -64,7 +64,7 @@ class Gemline
   end
 
   def self.gemspec_gemline(gem_name, version)
-    %Q{gem.add_dependency(%q<#{gem_name}>, ["~> #{version}"])}  
+    %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
   end
 
 
@@ -83,13 +83,10 @@ class Gemline
 
   def self.copy_to_clipboard(gemline)
     begin
-      if clipboard = IO.popen('pbcopy', 'r+')
-        clipboard.puts gemline
-        $stderr.puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
-      end
+      Clipboard.copy gemline
+      $stderr.puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
     rescue
-      ## Yeah, I hate this too.  But it does what I want -- silently fail if pbcopy isn't available.
-      ##   TODO: Use something more reliable and cross-platform.
+      ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
     end
   end
 
