@@ -13,16 +13,16 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.3.1'
+  gem.version       = '0.3.2'
 
   gem.add_dependency "json_pure", ">= 1.7.6"
   gem.add_dependency "clipboard", ">= 1.0.1"
 
-  if RUBY_PLATFORM =~ /(win|w)32$/
+  # if RUBY_PLATFORM =~ /(win|w)32$/
     ## The clipboard gem doesn't do a platform-dependent check,
     ##  and the gem will not work on Windows without ffi.
     gem.add_dependency "ffi"
-  end
+  # end
 
 	gem.add_development_dependency "rake" # For Travis CI
   gem.add_development_dependency "rspec", ">= 2.11.0"
