@@ -25,5 +25,5 @@ Gem::Specification.new do |gem|
   # end
 
 	gem.add_development_dependency "rake" # For Travis CI
-  gem.add_development_dependency "rspec", ">= 2.11.0"
+  gem.add_development_dependency "rspec", ">= 2.14.0"
 end
