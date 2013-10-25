@@ -5,11 +5,8 @@ require 'clipboard'
 class Gemline
   attr_accessor :gem, :gemline, :json, :response
 
-  def self.query(gem_name)
-    gem_name = sanitize_gem_name(gem_name)
-    check_input(gem_name)
-
-    g = Gemline.new(gem_name)
+  def self.query(gem_name, options = {})
+    g = Gemline.new(gem_name, options)
 
     if g.gem_not_found?
       $stderr.puts "Ruby gem #{gem_name} was not found on rubygems.org"
@@ -20,13 +17,8 @@ class Gemline
     end
   end
 
-  def self.sanitize_gem_name(gem_name)
-    gem_name.to_s.gsub(/[^\w\-]+/,'')
-  end
-
-
   def initialize(gem_name, options = {})
-    @gem = gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
+    @gem = sanitize_gem_name(gem_name)
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
@@ -34,13 +26,17 @@ class Gemline
     end
   end
 
+  def sanitize_gem_name(gem_name)
+    gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
+  end
+
   def gem_not_found?
     @json.match(/(could not be found|does not exist)/)
   end
-  
-  
+
+
   private
-  
+
   def self.get_rubygem_json(gem_name)
     uri = URI.parse("https://rubygems.org/api/v1/gems/#{gem_name}.json")
     http = Net::HTTP.new(uri.host, uri.port)
@@ -51,34 +47,27 @@ class Gemline
     response.body
   end
 
-  def self.create_gemline(gem_name, version, options = {})
+  def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
-      return gemspec_gemline(gem_name, version)
+      return gemspec_gemline(gem_name, version, options)
     else
-      return gemfile_gemline(gem_name, version)
+      return gemfile_gemline(gem_name, version, options.delete_if {|k,v| k == :gemspec})
     end
   end
 
-  def self.gemfile_gemline(gem_name, version)
-    %Q{gem "#{gem_name}", "~> #{version}"}  
+  def self.gemfile_gemline(gem_name, version, options)
+    options_string = options.empty? ? '' : ', '
+    options_string << options.to_s.delete('{}').gsub(/(?<!\s)=>(?!\s)/, ' => ')
+
+    %Q{gem "#{gem_name}", "~> #{version}"#{options_string}}
   end
 
-  def self.gemspec_gemline(gem_name, version)
-    %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
-  end
-
-
-  def self.check_input(gem_name)
-    if (gem_name.empty? || ['-h','--help','help'].include?(gem_name))
-      $stderr.puts "Usage: gemline [GEM NAME]"
-      $stderr.puts "  Prints a Gemfile require line for a Ruby gem on Rubygems.org"
-      Kernel.exit 1
+  def self.gemspec_gemline(gem_name, version, options)
+    if options[:group] == :development
+      %Q{gem.add_development_dependency "#{gem_name}", ">= #{version}"}
+    else
+      %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
     end
-    
-    # if (['-v','--version'].include?(gem_name))
-    #   puts "gemline #{Gemline::VERSION}"
-    #   exit
-    # end
   end
 
   def self.copy_to_clipboard(gemline)
