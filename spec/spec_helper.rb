@@ -16,7 +16,7 @@ end
 def stub_rubygems_json_output
   Dir.glob(File.join(File.dirname(__FILE__),'samples', '*.json')).each do |f|
     gem_name = $1 if f =~ /\/([\w\-]+).json$/
-    Gemline.stub!(:get_rubygem_json).with(gem_name).and_return(IO.read(f))
+    Gemline.stub(:get_rubygem_json).with(gem_name).and_return(IO.read(f))
   end
 end
 
