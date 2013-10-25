@@ -5,11 +5,8 @@ require 'clipboard'
 class Gemline
   attr_accessor :gem, :gemline, :json, :response
 
-  def self.query(gem_name)
-    gem_name = sanitize_gem_name(gem_name)
-    check_input(gem_name)
-
-    g = Gemline.new(gem_name)
+  def self.query(gem_name, options = {})
+    g = Gemline.new(gem_name, options)
 
     if g.gem_not_found?
       $stderr.puts "Ruby gem #{gem_name} was not found on rubygems.org"
@@ -20,18 +17,17 @@ class Gemline
     end
   end
 
-  def self.sanitize_gem_name(gem_name)
-    gem_name.to_s.gsub(/[^\w\-]+/,'')
-  end
-
-
   def initialize(gem_name, options = {})
-    @gem = gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
+    @gem = sanitize_gem_name(gem_name)
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
       @gemline = Gemline.create_gemline(@gem, response['version'], options)
     end
+  end
+
+  def sanitize_gem_name(gem_name)
+    gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
   end
 
   def gem_not_found?
@@ -72,20 +68,6 @@ class Gemline
     else
       %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
     end
-  end
-
-
-  def self.check_input(gem_name)
-    if (gem_name.empty? || ['-h','--help','help'].include?(gem_name))
-      $stderr.puts "Usage: gemline [GEM NAME]"
-      $stderr.puts "  Prints a Gemfile require line for a Ruby gem on Rubygems.org"
-      Kernel.exit 1
-    end
-
-    # if (['-v','--version'].include?(gem_name))
-    #   puts "gemline #{Gemline::VERSION}"
-    #   exit
-    # end
   end
 
   def self.copy_to_clipboard(gemline)
