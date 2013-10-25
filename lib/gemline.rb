@@ -55,16 +55,19 @@ class Gemline
     if options[:gemspec]
       return gemspec_gemline(gem_name, version, options)
     else
-      return gemfile_gemline(gem_name, version, options)
+      return gemfile_gemline(gem_name, version, options.delete_if {|k,v| k == :gemspec})
     end
   end
 
   def self.gemfile_gemline(gem_name, version, options)
-    %Q{gem "#{gem_name}", "~> #{version}"}
+    options_string = options.empty? ? '' : ', '
+    options_string << options.to_s.delete('{}').gsub(/(?<!\s)=>(?!\s)/, ' => ')
+
+    %Q{gem "#{gem_name}", "~> #{version}"#{options_string}}
   end
 
   def self.gemspec_gemline(gem_name, version, options)
-    if options[:development]
+    if options[:group] == :development
       %Q{gem.add_development_dependency "#{gem_name}", ">= #{version}"}
     else
       %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}

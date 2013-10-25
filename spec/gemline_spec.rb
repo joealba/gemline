@@ -36,8 +36,13 @@ describe Gemline do
     end
 
     it "should be able to generate a development gemspec-style gemline" do
-      g = Gemline.new('nokogiri', {:gemspec => true, :development => true})
+      g = Gemline.new('nokogiri', {:gemspec => true, :group => :development})
       expect(g.gemline).to eq(%Q!gem.add_development_dependency "nokogiri", ">= 1.5.5"!)
+    end
+
+    it "should be able to add options to a gemfile-style gemline" do
+      g = Gemline.new('nokogiri', {:group => [:development, :test], :git => "some git repo"})
+      expect(g.gemline).to eq(%Q{gem "nokogiri", "~> 1.5.5", :group => [:development, :test], :git => "some git repo"})
     end
 
   end
