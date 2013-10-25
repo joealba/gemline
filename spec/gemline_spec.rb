@@ -4,7 +4,7 @@ describe Gemline do
 
   describe "querying rubygems" do
 
-    before do     
+    before do
       stub_rubygems_json_output
     end
 
@@ -12,7 +12,7 @@ describe Gemline do
       g = Gemline.new('rails')
       expect(g.gemline).to eq(%Q{gem "rails", "~> 3.1.1"})
     end
-    
+
     it "should whine when the gem you are querying does not exist" do
       g = Gemline.new('doesnotexist')
       g.gem_not_found?.should be_true
@@ -33,6 +33,11 @@ describe Gemline do
     it "should be able to generate a gemspec-style gemline" do
       g = Gemline.new('rails', :gemspec => true)
       expect(g.gemline).to eq(%Q!gem.add_dependency "rails", ">= 3.1.1"!)
+    end
+
+    it "should be able to generate a development gemspec-style gemline" do
+      g = Gemline.new('nokogiri', {:gemspec => true, :development => true})
+      expect(g.gemline).to eq(%Q!gem.add_development_dependency "nokogiri", ">= 1.5.5"!)
     end
 
   end

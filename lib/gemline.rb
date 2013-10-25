@@ -37,10 +37,10 @@ class Gemline
   def gem_not_found?
     @json.match(/(could not be found|does not exist)/)
   end
-  
-  
+
+
   private
-  
+
   def self.get_rubygem_json(gem_name)
     uri = URI.parse("https://rubygems.org/api/v1/gems/#{gem_name}.json")
     http = Net::HTTP.new(uri.host, uri.port)
@@ -51,20 +51,24 @@ class Gemline
     response.body
   end
 
-  def self.create_gemline(gem_name, version, options = {})
+  def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
-      return gemspec_gemline(gem_name, version)
+      return gemspec_gemline(gem_name, version, options)
     else
-      return gemfile_gemline(gem_name, version)
+      return gemfile_gemline(gem_name, version, options)
     end
   end
 
-  def self.gemfile_gemline(gem_name, version)
-    %Q{gem "#{gem_name}", "~> #{version}"}  
+  def self.gemfile_gemline(gem_name, version, options)
+    %Q{gem "#{gem_name}", "~> #{version}"}
   end
 
-  def self.gemspec_gemline(gem_name, version)
-    %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
+  def self.gemspec_gemline(gem_name, version, options)
+    if options[:development]
+      %Q{gem.add_development_dependency "#{gem_name}", ">= #{version}"}
+    else
+      %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
+    end
   end
 
 
@@ -74,7 +78,7 @@ class Gemline
       $stderr.puts "  Prints a Gemfile require line for a Ruby gem on Rubygems.org"
       Kernel.exit 1
     end
-    
+
     # if (['-v','--version'].include?(gem_name))
     #   puts "gemline #{Gemline::VERSION}"
     #   exit
