@@ -57,7 +57,7 @@ class Gemline
 
   def self.gemfile_gemline(gem_name, version, options)
     options_string = options.empty? ? '' : ', '
-    options_string << options.to_s.delete('{}').gsub(/(?<!\s)=>(?!\s)/, ' => ')
+    options_string << options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
 
     %Q{gem "#{gem_name}", "~> #{version}"#{options_string}}
   end

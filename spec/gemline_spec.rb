@@ -41,8 +41,8 @@ describe Gemline do
     end
 
     it "should be able to add options to a gemfile-style gemline" do
-      g = Gemline.new('nokogiri', {:group => [:development, :test], :git => "some git repo"})
-      expect(g.gemline).to eq(%Q{gem "nokogiri", "~> 1.5.5", :group => [:development, :test], :git => "some git repo"})
+      g = Gemline.new('nokogiri', {:git => "some git repo", :group => [:development, :test]})
+      expect(g.gemline).to eq(%Q{gem "nokogiri", "~> 1.5.5", :git => "some git repo", :group => [:development, :test]})
     end
 
   end
