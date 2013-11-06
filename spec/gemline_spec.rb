@@ -37,7 +37,7 @@ describe Gemline do
 
     describe "generates a development gemspec-style gemline" do
       it "works when just passed the development group" do
-        g = Gemline.new('nokogiri', {:gemspec => true, :group => :development})
+        g = Gemline.new('nokogiri', {:gemspec => true, :group => 'development'})
         expect(g.gemline).to eq(%Q!gem.add_development_dependency "nokogiri", "~> 1.5.5"!)
       end
       it "works when passed other groups also" do
@@ -54,6 +54,32 @@ describe Gemline do
       expect(line).to include(%Q{:group => [:development, :test]})
     end
 
+  end
+
+  describe 'helper methods' do
+    describe '#options_to_string' do
+      it "returns nothing when no options provided" do
+        expect(Gemline.options_to_string).to eq ''
+      end
+
+      describe "gem groups" do
+        it "handles a single group as a symbol" do
+          expect(Gemline.options_to_string :group => :development).to eq ':group => :development'
+        end
+
+        it "handles a single group as a string" do
+          expect(Gemline.options_to_string :group => 'development').to eq ':group => :development'
+        end
+
+        it "handles a list of groups as symbols" do
+          expect(Gemline.options_to_string :group => [:development, :test]).to eq ':group => [:development, :test]'
+        end
+
+        it "handles a list of groups as strings" do
+          expect(Gemline.options_to_string :group => ['development','test']).to eq ':group => [:development, :test]'
+        end
+      end
+    end
   end
 
 end

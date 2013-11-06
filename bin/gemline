@@ -24,7 +24,6 @@ OptionParser.new do |opts|
   end
 
   opts.on("--group x,y,z", Array) do |group|
-    group.map! { |x| x.to_sym }
     group = group[0] if group.size == 1
     options[:group] = group
   end

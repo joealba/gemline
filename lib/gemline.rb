@@ -56,14 +56,21 @@ class Gemline
   end
 
   def self.gemfile_gemline(gem_name, version, options)
-    options_string = options.empty? ? '' : ', '
-    options_string << options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
+    line = %Q{gem "#{gem_name}", "~> #{version}"}
+    line << ", " + options_to_string(options) if !options.empty?
+    line
+  end
 
-    %Q{gem "#{gem_name}", "~> #{version}"#{options_string}}
+  def self.options_to_string(options = {})
+    if options[:group]
+      options[:group] = [options[:group]].flatten.map { |x| x.to_sym }
+      options[:group] = options[:group].first if options[:group].length == 1
+    end
+    options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
   end
 
   def self.gemspec_gemline(gem_name, version, options)
-    if options[:group] =~ /\bdevelopment\b/
+    if options[:group] && options[:group].include?('development')
       %Q{gem.add_development_dependency "#{gem_name}", "~> #{version}"}
     else
       %Q{gem.add_dependency "#{gem_name}", "~> #{version}"}
