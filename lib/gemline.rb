@@ -63,10 +63,10 @@ class Gemline
   end
 
   def self.gemspec_gemline(gem_name, version, options)
-    if options[:group] == :development
-      %Q{gem.add_development_dependency "#{gem_name}", ">= #{version}"}
+    if options[:group] =~ /\bdevelopment\b/
+      %Q{gem.add_development_dependency "#{gem_name}", "~> #{version}"}
     else
-      %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
+      %Q{gem.add_dependency "#{gem_name}", "~> #{version}"}
     end
   end
 

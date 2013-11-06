@@ -32,12 +32,18 @@ describe Gemline do
 
     it "should be able to generate a gemspec-style gemline" do
       g = Gemline.new('rails', :gemspec => true)
-      expect(g.gemline).to eq(%Q!gem.add_dependency "rails", ">= 3.1.1"!)
+      expect(g.gemline).to eq(%Q!gem.add_dependency "rails", "~> 3.1.1"!)
     end
 
-    it "should be able to generate a development gemspec-style gemline" do
-      g = Gemline.new('nokogiri', {:gemspec => true, :group => :development})
-      expect(g.gemline).to eq(%Q!gem.add_development_dependency "nokogiri", ">= 1.5.5"!)
+    describe "generates a development gemspec-style gemline" do
+      it "works when just passed the development group" do
+        g = Gemline.new('nokogiri', {:gemspec => true, :group => :development})
+        expect(g.gemline).to eq(%Q!gem.add_development_dependency "nokogiri", "~> 1.5.5"!)
+      end
+      it "works when passed other groups also" do
+        g = Gemline.new('nokogiri', {:gemspec => true, :group => 'development,test'})
+        expect(g.gemline).to eq(%Q!gem.add_development_dependency "nokogiri", "~> 1.5.5"!)
+      end
     end
 
     it "should be able to add options to a gemfile-style gemline" do
