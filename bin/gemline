@@ -1,13 +1,50 @@
 #!/usr/bin/env ruby
 
 require "gemline"
+require 'optparse'
 
 ## TODO: Real command line parsing to support some switches
 ##   for things like:
 ##   --pre : Get latest pre-release version
-##   --gemspec or -g : Get the gemspec version of the gemline
 ##   --major N : Get latest version of gem within the given major release number
 ##   --web or -w : Get rubygems.org link
+
+def self.help_message
+  puts "Usage: gemline [GEM NAME]"
+  puts "  Prints a Gemfile require line for a Ruby gem on Rubygems.org"
+  exit
+end
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: gemline gem_name [options]"
+
+  opts.on("--gemspec", "-g") do |g|
+    options[:gemspec] = g
+  end
+
+  opts.on("--group x,y,z", Array) do |group|
+    group.map! { |x| x.to_sym }
+    group = group[0] if group.size == 1
+    options[:group] = group
+  end
+
+  opts.on("--git x", String) do |git|
+    options[:git] = git
+  end
+
+  opts.on("-v", "--version") do
+    puts "gemline #{Gem::Specification::load("gemline.gemspec").version}"
+    exit
+  end
+
+  opts.on("-h", "--help", "help") do
+    help_message
+  end
+end.parse!
+
 gem = STDIN.tty? ? ARGV[0] : STDIN.read
 
-Gemline.query(gem)
+help_message unless gem
+
+Gemline.query(gem, options)

@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.3.2'
+  gem.version       = '0.3.3'
 
   gem.add_dependency "json_pure", ">= 1.7.6"
   gem.add_dependency "clipboard", ">= 1.0.1"
