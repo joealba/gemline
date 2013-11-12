@@ -22,7 +22,8 @@ class Gemline
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
-      @gemline = Gemline.create_gemline(@gem, response['version'], options)
+      selected_gem = get_gem(response)
+      @gemline = Gemline.create_gemline(@gem, selected_gem['number'], options)
     end
   end
 
@@ -38,7 +39,7 @@ class Gemline
   private
 
   def self.get_rubygem_json(gem_name)
-    uri = URI.parse("https://rubygems.org/api/v1/gems/#{gem_name}.json")
+    uri = URI.parse("https://rubygems.org/api/v1/versions/#{gem_name}.json")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -84,6 +85,11 @@ class Gemline
     rescue
       ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
     end
+  end
+
+  def get_gem(response)
+    response.select {|r| r['prerelease'] == false}.
+      sort {|x,y| y['number'] <=> x['number'] }.first
   end
 
 end
