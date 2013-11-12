@@ -3,7 +3,7 @@ require 'net/https'
 require 'clipboard'
 
 class Gemline
-  attr_accessor :gem, :gemline, :json, :response
+  attr_accessor :gem, :gemline, :json, :response, :selected_gem, :gem_version
 
   def self.query(gem_name, options = {})
     g = Gemline.new(gem_name, options)
@@ -22,8 +22,9 @@ class Gemline
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
-      selected_gem = get_gem(response, options)
-      @gemline = Gemline.create_gemline(@gem, selected_gem['number'], options)
+      @selected_gem = get_gem(response, options)
+      @gem_version = @selected_gem['number']
+      @gemline = Gemline.create_gemline(@gem, @gem_version, options)
     end
   end
 
