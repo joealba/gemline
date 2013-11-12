@@ -5,7 +5,6 @@ require 'optparse'
 
 ## TODO: Real command line parsing to support some switches
 ##   for things like:
-##   --pre : Get latest pre-release version
 ##   --major N : Get latest version of gem within the given major release number
 ##   --web or -w : Get rubygems.org link
 
@@ -24,13 +23,16 @@ OptionParser.new do |opts|
   end
 
   opts.on("--group x,y,z", Array) do |group|
-    group.map! { |x| x.to_sym }
     group = group[0] if group.size == 1
     options[:group] = group
   end
 
   opts.on("--git x", String) do |git|
     options[:git] = git
+  end
+
+  opts.on("--pre") do |p|
+    options[:pre] = p
   end
 
   opts.on("-v", "--version") do

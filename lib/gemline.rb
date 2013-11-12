@@ -22,7 +22,8 @@ class Gemline
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
-      @gemline = Gemline.create_gemline(@gem, response['version'], options)
+      selected_gem = get_gem(response, options)
+      @gemline = Gemline.create_gemline(@gem, selected_gem['number'], options)
     end
   end
 
@@ -38,7 +39,7 @@ class Gemline
   private
 
   def self.get_rubygem_json(gem_name)
-    uri = URI.parse("https://rubygems.org/api/v1/gems/#{gem_name}.json")
+    uri = URI.parse("https://rubygems.org/api/v1/versions/#{gem_name}.json")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -49,24 +50,31 @@ class Gemline
 
   def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
-      return gemspec_gemline(gem_name, version, options)
+      return gemspec_gemline(gem_name, version, options[:group])
     else
-      return gemfile_gemline(gem_name, version, options.delete_if {|k,v| k == :gemspec})
+      return gemfile_gemline(gem_name, version, option_remover(options))
     end
   end
 
   def self.gemfile_gemline(gem_name, version, options)
-    options_string = options.empty? ? '' : ', '
-    options_string << options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
-
-    %Q{gem "#{gem_name}", "~> #{version}"#{options_string}}
+    line = %Q{gem "#{gem_name}", "~> #{version}"}
+    line << ", " + options_to_string(options) if !options.empty?
+    line
   end
 
-  def self.gemspec_gemline(gem_name, version, options)
-    if options[:group] == :development
-      %Q{gem.add_development_dependency "#{gem_name}", ">= #{version}"}
+  def self.options_to_string(options = {})
+    if options[:group]
+      options[:group] = [options[:group]].flatten.map { |x| x.to_sym }
+      options[:group] = options[:group].first if options[:group].length == 1
+    end
+    options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
+  end
+
+  def self.gemspec_gemline(gem_name, version, group)
+    if group && group.include?('development')
+      %Q{gem.add_development_dependency "#{gem_name}", "~> #{version}"}
     else
-      %Q{gem.add_dependency "#{gem_name}", ">= #{version}"}
+      %Q{gem.add_dependency "#{gem_name}", "~> #{version}"}
     end
   end
 
@@ -77,6 +85,30 @@ class Gemline
     rescue
       ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
     end
+  end
+
+  def get_gem(response, options)
+    sorted_gems = response.sort {|x,y| y['number'] <=> x['number'] }
+
+    if options[:pre]
+      sorted_gems.first
+    else
+      sorted_gems.select {|r| r['prerelease'] == false}.first
+    end
+  end
+
+  def self.option_remover(options)
+    options_whitelist = [
+                          :group,
+                          :git,
+                          :branch,
+                          :tag,
+                          :ref,
+                          :require,
+                          :path
+                        ]
+
+    options.delete_if {|k,v| !options_whitelist.include?(k)}
   end
 
 end

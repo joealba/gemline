@@ -4,11 +4,39 @@ Create a tilde-arrow Gemfile line for a gem on rubygems.org using the latest ver
 
 If possible, we'll also copy that Gemfile line into the clipboard using pbcopy.
 
-== Example
+== Examples
+
+=== Normal Gemfile usage
 
   # gemline rails
-  gem "rails", "~> 3.1.1"
+  gem "rails", "~> 4.0.1"
     Gem line copied to your clipboard.  Ready to paste into your Gemfile
+
+=== Including group designation
+
+  # gemline rails --group development,test
+  gem "rails", "~> 4.0.1", :group => [:development, :test]
+    Gem line copied to your clipboard.  Ready to paste into your Gemfile
+
+=== Append your Gemfile
+
+  # gemline rails >> Gemfile
+
+=== Gemspec style
+
+  # gemline rails -g
+  gem.add_dependency "rails", "~> 4.0.1"
+    Gem line copied to your clipboard.  Ready to paste into your Gemfile
+
+  # gemline rails -g --group development
+  gem.add_development_dependency "rails", "~> 4.0.1"
+    Gem line copied to your clipboard.  Ready to paste into your Gemfile
+
+=== Gemline -- It's not just for the command line anymore.  You can use it in your bootstrapping code too.
+
+  require 'gemline'
+  puts Gemline.new('rails').gemline
+  puts Gemline.new('rails', :group => :development).gemline
 
 == Install
 
@@ -22,5 +50,4 @@ If possible, we'll also copy that Gemfile line into the clipboard using pbcopy.
 
 * A --pre option to grab the latest prerelease version
 * An --open option to open the gem's rubygems.org page in the default browser
-* Switching to a real command line parser instead of the lazy code in place now to allow the addition of the above options
 
