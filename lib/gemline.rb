@@ -22,8 +22,8 @@ class Gemline
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
-      selected_gem = get_gem(response)
-      @gemline = Gemline.create_gemline(@gem, selected_gem['number'], options)
+      selected_gem = get_gem(response, options)
+      @gemline = Gemline.create_gemline(@gem, selected_gem['number'], options.delete_if {|k,v| k == :pre})
     end
   end
 
@@ -87,9 +87,14 @@ class Gemline
     end
   end
 
-  def get_gem(response)
-    response.select {|r| r['prerelease'] == false}.
-      sort {|x,y| y['number'] <=> x['number'] }.first
+  def get_gem(response, options)
+    sorted_gems = response.sort {|x,y| y['number'] <=> x['number'] }
+
+    if options[:pre]
+      sorted_gems.first
+    else
+      sorted_gems.select {|r| r['prerelease'] == false}.first
+    end
   end
 
 end

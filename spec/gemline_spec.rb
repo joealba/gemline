@@ -54,6 +54,11 @@ describe Gemline do
       expect(line).to include(%Q{:group => [:development, :test]})
     end
 
+    it "should be able to return prerelease gem versions" do
+      g = Gemline.new('rails', :pre => true)
+      expect(g.gemline).to eq(%Q{gem "rails", "~> 4.0.1.rc4"})
+    end
+
   end
 
   describe 'helper methods' do

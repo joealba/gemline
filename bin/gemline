@@ -32,6 +32,10 @@ OptionParser.new do |opts|
     options[:git] = git
   end
 
+  opts.on("--pre") do |p|
+    options[:pre] = p
+  end
+
   opts.on("-v", "--version") do
     puts "gemline #{Gem::Specification::load("gemline.gemspec").version}"
     exit
