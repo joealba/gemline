@@ -5,7 +5,6 @@ require 'optparse'
 
 ## TODO: Real command line parsing to support some switches
 ##   for things like:
-##   --pre : Get latest pre-release version
 ##   --major N : Get latest version of gem within the given major release number
 ##   --web or -w : Get rubygems.org link
 
