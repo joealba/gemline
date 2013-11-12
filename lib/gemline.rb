@@ -23,7 +23,7 @@ class Gemline
     unless gem_not_found?
       @response = JSON.parse(@json)
       selected_gem = get_gem(response, options)
-      @gemline = Gemline.create_gemline(@gem, selected_gem['number'], options.delete_if {|k,v| k == :pre})
+      @gemline = Gemline.create_gemline(@gem, selected_gem['number'], options)
     end
   end
 
@@ -50,9 +50,9 @@ class Gemline
 
   def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
-      return gemspec_gemline(gem_name, version, options)
+      return gemspec_gemline(gem_name, version, options[:group])
     else
-      return gemfile_gemline(gem_name, version, options.delete_if {|k,v| k == :gemspec})
+      return gemfile_gemline(gem_name, version, option_remover(options))
     end
   end
 
@@ -70,8 +70,8 @@ class Gemline
     options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
   end
 
-  def self.gemspec_gemline(gem_name, version, options)
-    if options[:group] && options[:group].include?('development')
+  def self.gemspec_gemline(gem_name, version, group)
+    if group && group.include?('development')
       %Q{gem.add_development_dependency "#{gem_name}", "~> #{version}"}
     else
       %Q{gem.add_dependency "#{gem_name}", "~> #{version}"}
@@ -95,6 +95,20 @@ class Gemline
     else
       sorted_gems.select {|r| r['prerelease'] == false}.first
     end
+  end
+
+  def self.option_remover(options)
+    options_whitelist = [
+                          :group,
+                          :git,
+                          :branch,
+                          :tag,
+                          :ref,
+                          :require,
+                          :path
+                        ]
+
+    options.delete_if {|k,v| !options_whitelist.include?(k)}
   end
 
 end
