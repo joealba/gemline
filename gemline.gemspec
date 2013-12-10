@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.version       = '0.4.0'
+  gem.license       = 'MIT'
 
   gem.add_dependency "json_pure", ">= 1.7.6"
   gem.add_dependency "clipboard", ">= 1.0.1"
