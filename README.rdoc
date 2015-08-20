@@ -1,6 +1,6 @@
 = gemline
 
-{<img src="https://travis-ci.org/joealba/gitswitch.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/joealba/gitswitch]
+{<img src="https://travis-ci.org/joealba/gemline.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/joealba/gemline]
 
 Create a tilde-arrow Gemfile line for a gem on rubygems.org using the latest version number available according to the rubygems api.
 
