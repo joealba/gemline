@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.4.2'
+  gem.version       = '0.4.3'
   gem.license       = 'MIT'
 
   gem.add_dependency "clipboard", ">= 1.0.1"
