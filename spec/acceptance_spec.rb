@@ -3,7 +3,7 @@ require 'stringio'
 
 describe "gemline output" do
 
-  before do     
+  before do
     stub_rubygems_json_output
   end
 
@@ -13,7 +13,7 @@ describe "gemline output" do
   end
 
   it "should output nothing to STDOUT on error" do
-    Kernel.stub(:exit)
+    allow(Kernel).to receive(:exit).and_return(true)
     grab_io { Gemline.query('doesnotexist') }
     expect(@stdout.readlines.count).to eq(0)
   end

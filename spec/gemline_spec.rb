@@ -15,14 +15,14 @@ describe Gemline do
 
     it "should whine when the gem you are querying does not exist" do
       g = Gemline.new('doesnotexist')
-      g.gem_not_found?.should be_true
-      expect(g.gemline).to be_nil
+      expect(g.gem_not_found?).to eq true
+      expect(g.gemline).to eq nil
     end
 
     it "should properly detect a blocked gem name" do
       g = Gemline.new('yaml')
-      expect(g.gem_not_found?).to be_true
-      expect(g.gemline).to be_nil
+      expect(g.gem_not_found?).to eq true
+      expect(g.gemline).to eq nil
     end
 
     it "should properly handle funny characters in the returned JSON" do
