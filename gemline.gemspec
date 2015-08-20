@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Joseph Alba"]
+  gem.authors       = ["Joe Alba"]
   gem.email         = ["joe@joealba.com"]
   gem.description   = %q{Grab the latest Gemfile 'gem' line for a specific Ruby gem}
   gem.summary       = %q{}
-  gem.homepage      = "http://github.com/joealba/gemline"
+  gem.homepage      = "https://github.com/joealba/gemline"
 
   gem.executables   = ['gemline']
   gem.files         = `git ls-files`.split("\n")
@@ -13,10 +13,9 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.4.1'
+  gem.version       = '0.4.3'
   gem.license       = 'MIT'
 
-  gem.add_dependency "json_pure", ">= 1.7.6"
   gem.add_dependency "clipboard", ">= 1.0.1"
 
   # if RUBY_PLATFORM =~ /(win|w)32$/
@@ -26,6 +25,6 @@ Gem::Specification.new do |gem|
   # end
 
 	gem.add_development_dependency "rake" # For Travis CI
-  gem.add_development_dependency "rspec", ">= 2.14.0"
-  gem.add_development_dependency "simplecov", "~> 0.7.1"
+  gem.add_development_dependency "rspec", ">= 3.3.0"
+  gem.add_development_dependency "simplecov", ">= 0.7.1"
 end

@@ -1,4 +1,3 @@
-require 'json/pure'
 require 'net/https'
 require 'clipboard'
 
@@ -31,7 +30,7 @@ class Gemline
   end
 
   def gem_not_found?
-    @json.match(/(could not be found|does not exist)/)
+    !!@json.match(/(could not be found|does not exist)/)
   end
 
 
