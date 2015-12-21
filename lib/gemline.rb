@@ -1,5 +1,6 @@
 require 'net/https'
 require 'clipboard'
+require 'json'
 
 class Gemline
   attr_accessor :gem, :gemline, :json, :response
