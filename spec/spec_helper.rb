@@ -1,8 +1,6 @@
-if RUBY_VERSION >= '1.9'
-  require 'simplecov'
-  SimpleCov.start do
-    add_filter "/spec/"
-  end
+require 'simplecov'
+SimpleCov.start do
+  add_filter "/spec/"
 end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
