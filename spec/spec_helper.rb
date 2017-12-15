@@ -6,17 +6,11 @@ end
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'rubygems'
 require 'gemline'
-
-require 'bundler'
-Bundler.setup
-
 
 RSpec.configure do |c|
   # c.mock_with :rr
 end
-
 
 def stub_rubygems_json_output
   Dir.glob(File.join(File.dirname(__FILE__),'samples', '*.json')).each do |f|
