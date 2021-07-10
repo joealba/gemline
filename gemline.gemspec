@@ -13,10 +13,10 @@ Gem::Specification.new do |gem|
   gem.name          = "gemline"
   gem.require_paths = ["lib"]
 
-  gem.version       = '0.4.4'
+  gem.version       = '0.4.5'
   gem.license       = 'MIT'
 
-  gem.add_dependency "clipboard", ">= 1.0.1"
+  gem.add_dependency "clipboard", ">= 1.3.5"
 
   # if RUBY_PLATFORM =~ /(win|w)32$/
     ## The clipboard gem doesn't do a platform-dependent check,
@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
     gem.add_dependency "ffi"
   # end
 
-	gem.add_development_dependency "rake" # For Travis CI
-  gem.add_development_dependency "rspec", ">= 3.3.0"
-  gem.add_development_dependency "simplecov", ">= 0.7.1"
+	gem.add_development_dependency "rake"
+  gem.add_development_dependency "rspec", ">= 3.0"
+  gem.add_development_dependency "simplecov"
 end
