@@ -34,7 +34,6 @@ class Gemline
     !!@json.match(/(could not be found|does not exist)/)
   end
 
-
   private
 
   def self.get_rubygem_json(gem_name)
@@ -65,6 +64,7 @@ class Gemline
       options[:group] = [options[:group]].flatten.map { |x| x.to_sym }
       options[:group] = options[:group].first if options[:group].length == 1
     end
+
     options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
   end
 
@@ -84,5 +84,4 @@ class Gemline
       ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
     end
   end
-
 end
