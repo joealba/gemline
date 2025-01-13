@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "gemline"
-require 'optparse'
+require "optparse"
 
 ## TODO: Real command line parsing to support some switches
 ##   for things like:

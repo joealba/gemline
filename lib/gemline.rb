@@ -1,6 +1,6 @@
-require 'net/https'
-require 'clipboard'
-require 'json'
+require "net/https"
+require "clipboard"
+require "json"
 
 class Gemline
   attr_accessor :gem, :gemline, :json, :response
@@ -22,12 +22,12 @@ class Gemline
     @json = Gemline.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
-      @gemline = Gemline.create_gemline(@gem, response['version'], options)
+      @gemline = Gemline.create_gemline(@gem, response["version"], options)
     end
   end
 
   def sanitize_gem_name(gem_name)
-    gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
+    gem_name.to_s.gsub(/[^\w-]+/, "") # Yeah, a little over-defensive.
   end
 
   def gem_not_found?
@@ -47,9 +47,9 @@ class Gemline
 
   def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
-      return gemspec_gemline(gem_name, version, options)
+      gemspec_gemline(gem_name, version, options)
     else
-      return gemfile_gemline(gem_name, version, options.delete_if {|k,v| k == :gemspec})
+      gemfile_gemline(gem_name, version, options.delete_if { |k, _| k == :gemspec })
     end
   end
 
