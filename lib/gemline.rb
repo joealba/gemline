@@ -36,7 +36,25 @@ class Gemline
     !!@json.match(/(could not be found|does not exist)/)
   end
 
-  private
+  def self.options_to_string(options = {})
+    if options[:group]
+      options[:group] = [options[:group]].flatten.map(&:to_sym)
+      options[:group] = options[:group].first if options[:group].length == 1
+    end
+
+    options.map { |k, v| "#{k}: #{value_to_string(v)}" }.join(", ")
+  end
+
+  def self.value_to_string(val)
+    case val
+    when Array
+      val.to_s
+    when Symbol
+      ":#{val}"
+    when String
+      "\"#{val}\""
+    end
+  end
 
   def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
@@ -47,34 +65,22 @@ class Gemline
   end
 
   def self.gemfile_gemline(gem_name, version, options)
-    line = %Q{gem "#{gem_name}", "~> #{version}"}
-    line << ", " + options_to_string(options) if !options.empty?
-    line
+    %Q{gem "#{gem_name}", "~> #{version}"#{gemfile_gemline_options_suffix(options)}}
   end
 
-  def self.options_to_string(options = {})
-    if options[:group]
-      options[:group] = [options[:group]].flatten.map { |x| x.to_sym }
-      options[:group] = options[:group].first if options[:group].length == 1
-    end
-
-    options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
+  def self.gemfile_gemline_options_suffix(options)
+    !options.empty? ? ", " + options_to_string(options) : ""
   end
 
   def self.gemspec_gemline(gem_name, version, options)
-    if options[:group] && options[:group].include?('development')
-      %Q{gem.add_development_dependency "#{gem_name}", "~> #{version}"}
-    else
-      %Q{gem.add_dependency "#{gem_name}", "~> #{version}"}
-    end
+    dependency_signifier = options[:group]&.include?('development') ? "add_development_dependency" : "add_dependency"
+    %Q{gem.#{dependency_signifier} "#{gem_name}", "~> #{version}"}
   end
 
   def self.copy_to_clipboard(gemline)
-    begin
-      Clipboard.copy gemline
-      $stderr.puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
-    rescue
-      ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
-    end
+    Clipboard.copy gemline
+    $stderr.puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
+  rescue
+    ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
   end
 end
