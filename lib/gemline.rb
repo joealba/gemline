@@ -2,6 +2,8 @@ require "net/https"
 require "clipboard"
 require "json"
 
+require_relative "./gemline/rubygems"
+
 class Gemline
   attr_accessor :gem, :gemline, :json, :response
 
@@ -19,7 +21,7 @@ class Gemline
 
   def initialize(gem_name, options = {})
     @gem = sanitize_gem_name(gem_name)
-    @json = Gemline.get_rubygem_json(@gem)
+    @json = Gemline::Rubygems.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
       @gemline = Gemline.create_gemline(@gem, response["version"], options)
@@ -35,15 +37,6 @@ class Gemline
   end
 
   private
-
-  def self.get_rubygem_json(gem_name)
-    uri = URI.parse("https://rubygems.org/api/v1/gems/#{gem_name}.json")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    request = Net::HTTP::Get.new(uri.request_uri)
-    response = http.request(request)
-    response.body
-  end
 
   def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
