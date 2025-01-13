@@ -1,6 +1,8 @@
-require 'net/https'
-require 'clipboard'
-require 'json'
+require "net/https"
+require "clipboard"
+require "json"
+
+require_relative "./gemline/rubygems"
 
 class Gemline
   attr_accessor :gem, :gemline, :json, :response
@@ -19,69 +21,66 @@ class Gemline
 
   def initialize(gem_name, options = {})
     @gem = sanitize_gem_name(gem_name)
-    @json = Gemline.get_rubygem_json(@gem)
+    @json = Gemline::Rubygems.get_rubygem_json(@gem)
     unless gem_not_found?
       @response = JSON.parse(@json)
-      @gemline = Gemline.create_gemline(@gem, response['version'], options)
+      @gemline = Gemline.create_gemline(@gem, response["version"], options)
     end
   end
 
   def sanitize_gem_name(gem_name)
-    gem_name.to_s.gsub(/[^\w\-]+/,'') # Yeah, a little over-defensive.
+    gem_name.to_s.gsub(/[^\w-]+/, "") # Yeah, a little over-defensive.
   end
 
   def gem_not_found?
     !!@json.match(/(could not be found|does not exist)/)
   end
 
-  private
+  def self.options_to_string(options = {})
+    if options[:group]
+      options[:group] = [options[:group]].flatten.map(&:to_sym)
+      options[:group] = options[:group].first if options[:group].length == 1
+    end
 
-  def self.get_rubygem_json(gem_name)
-    uri = URI.parse("https://rubygems.org/api/v1/gems/#{gem_name}.json")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    request = Net::HTTP::Get.new(uri.request_uri)
-    response = http.request(request)
-    response.body
+    options.map { |k, v| "#{k}: #{value_to_string(v)}" }.join(", ")
+  end
+
+  def self.value_to_string(val)
+    case val
+    when Array
+      val.to_s
+    when Symbol
+      ":#{val}"
+    when String
+      "\"#{val}\""
+    end
   end
 
   def self.create_gemline(gem_name, version, options)
     if options[:gemspec]
-      return gemspec_gemline(gem_name, version, options)
+      gemspec_gemline(gem_name, version, options)
     else
-      return gemfile_gemline(gem_name, version, options.delete_if {|k,v| k == :gemspec})
+      gemfile_gemline(gem_name, version, options.delete_if { |k, _| k == :gemspec })
     end
   end
 
   def self.gemfile_gemline(gem_name, version, options)
-    line = %Q{gem "#{gem_name}", "~> #{version}"}
-    line << ", " + options_to_string(options) if !options.empty?
-    line
+    %Q{gem "#{gem_name}", "~> #{version}"#{gemfile_gemline_options_suffix(options)}}
   end
 
-  def self.options_to_string(options = {})
-    if options[:group]
-      options[:group] = [options[:group]].flatten.map { |x| x.to_sym }
-      options[:group] = options[:group].first if options[:group].length == 1
-    end
-
-    options.inspect.delete('{}').gsub(/(?!\s)=>(?!\s)/, ' => ')
+  def self.gemfile_gemline_options_suffix(options)
+    !options.empty? ? ", " + options_to_string(options) : ""
   end
 
   def self.gemspec_gemline(gem_name, version, options)
-    if options[:group] && options[:group].include?('development')
-      %Q{gem.add_development_dependency "#{gem_name}", "~> #{version}"}
-    else
-      %Q{gem.add_dependency "#{gem_name}", "~> #{version}"}
-    end
+    dependency_signifier = options[:group]&.include?('development') ? "add_development_dependency" : "add_dependency"
+    %Q{gem.#{dependency_signifier} "#{gem_name}", "~> #{version}"}
   end
 
   def self.copy_to_clipboard(gemline)
-    begin
-      Clipboard.copy gemline
-      $stderr.puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
-    rescue
-      ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
-    end
+    Clipboard.copy gemline
+    $stderr.puts "  Gem line copied to your clipboard.  Ready to paste into your Gemfile"
+  rescue
+    ## Yeah, I hate this too.  But it does what I want -- silently fail if Clipboard fails.
   end
 end

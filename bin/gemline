@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "gemline"
-require 'optparse'
+require "optparse"
 
 ## TODO: Real command line parsing to support some switches
 ##   for things like:
@@ -33,7 +33,7 @@ OptionParser.new do |opts|
   end
 
   opts.on("-v", "--version") do
-    puts "gemline #{Gem::Specification::load("gemline.gemspec").version}"
+    puts "gemline #{Gem::Specification.load("gemline.gemspec").version}"
     exit
   end
 
