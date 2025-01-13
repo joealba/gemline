@@ -33,7 +33,7 @@ OptionParser.new do |opts|
   end
 
   opts.on("-v", "--version") do
-    puts "gemline #{Gem::Specification::load("gemline.gemspec").version}"
+    puts "gemline #{Gem::Specification.load("gemline.gemspec").version}"
     exit
   end
 
